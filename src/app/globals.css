@@ -3,19 +3,55 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+    :root {
+        --foreground-rgb: 255, 255, 255;
+        --background-start-rgb: 0, 0, 0;
+        --background-end-rgb: 0, 0, 0;
+    }
 }
 
-body {
-  
+.ant-tabs-nav-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.ant-tabs-tab {
+    color: white !important;
+    width: 100% !important;
+    justify-content: center;
+    margin-left: 0 !important;
+    border-bottom: 0 !important;
+}
+
+.ant-tabs-nav::before {
+    border-bottom: 0px !important;
+}
+
+.ant-tabs-ink-bar {
+    height: 5px;
+    background: #6eb89f !important;
+    padding: 1.5px;
+    border-bottom: 1.5px !important;
+}
+
+.ant-tabs-tab-btn[aria-selected='true'] {
+    color: #6eb89f !important;
+}
+
+/* Collapse */
+
+.ant-collapse-header {
+    color: white !important;
+}
+
+.ant-collapse-item {
+    border-bottom: 0px !important;
 }
