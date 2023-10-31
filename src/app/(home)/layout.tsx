@@ -1,16 +1,18 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
+import { Layout } from 'antd';
+import Header from '@/components/component/header/Header';
 
 type Props = {
     children: ReactNode;
 };
 
-const Layout = ({ children }: Props) => {
+const MainLayout = ({ children }: Props) => {
     return (
-        <div>
-            Layout
+        <Layout className="bg-white">
+            <Header />
             {children}
-        </div>
+        </Layout>
     );
 };
 
-export default Layout;
+export default MainLayout;
