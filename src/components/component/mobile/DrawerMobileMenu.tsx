@@ -1,13 +1,125 @@
-import { MenuOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons';
-import { Collapse, CollapseProps, Drawer, List, Tabs, TabsProps } from 'antd';
+import { FolderOutlined, MenuOutlined, SearchOutlined, ShopOutlined } from '@ant-design/icons';
+import { Drawer, Menu, MenuProps, Tabs } from 'antd';
+import Link from 'next/link';
 import { useState } from 'react';
 
 type Props = {};
 
 const { TabPane } = Tabs;
 
+type MenuItem = Required<MenuProps>['items'][number];
+
+function getItem(
+    label: React.ReactNode,
+    key: React.Key,
+    icon?: React.ReactNode,
+    children?: MenuItem[],
+    type?: 'group',
+): MenuItem {
+    return {
+        key,
+        icon,
+        children,
+        label,
+        type,
+    } as MenuItem;
+}
+
+const items: MenuProps['items'] = [
+    getItem(
+        <Link className="text-sm !text-white font-semibold uppercase block hover:text-white" href={''}>
+            News & Events
+        </Link>,
+        'sub1',
+        null,
+        [
+            getItem(
+                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                    News
+                </Link>,
+                'g1',
+            ),
+            getItem(
+                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                    Latest Game Merchandise
+                </Link>,
+                'g2',
+            ),
+            getItem(
+                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                    Wish Banner
+                </Link>,
+                'g3',
+            ),
+            getItem(
+                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                    Promotion Code
+                </Link>,
+                'g4',
+            ),
+        ],
+    ),
+
+    getItem(
+        <Link className="text-sm !text-white uppercase font-semibold block hover:text-white" href={''}>
+            Merch Shop
+        </Link>,
+        'sub2',
+        <ShopOutlined className="!text-lg !text-white" />,
+    ),
+
+    getItem(
+        <Link className="text-sm !text-white uppercase font-semibold block hover:text-white" href={''}>
+            Characters
+        </Link>,
+        'sub3',
+        null,
+        [
+            getItem(
+                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                    All Characters
+                </Link>,
+                '9',
+                <FolderOutlined />,
+            ),
+            getItem(
+                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                    Mondstadt
+                </Link>,
+                '10',
+                <FolderOutlined />,
+            ),
+            getItem(
+                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                    Liyue
+                </Link>,
+                '11',
+                <FolderOutlined />,
+            ),
+            getItem(
+                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                    Inazuma
+                </Link>,
+                '12',
+                <FolderOutlined />,
+            ),
+            getItem(
+                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                    Sumeru
+                </Link>,
+                '13',
+                <FolderOutlined />,
+            ),
+        ],
+    ),
+];
+
 const DrawerMobileMenu = ({}: Props) => {
     const [open, setOpen] = useState(false);
+    const [children, setChildren] = useState<{ open: boolean; id: number | null }>({
+        open: false,
+        id: null,
+    });
 
     const showDrawer = () => {
         setOpen(true);
@@ -26,9 +138,10 @@ const DrawerMobileMenu = ({}: Props) => {
             </button>
 
             <Drawer
-                style={{ backgroundColor: 'black', padding: 0 }}
+                style={{ backgroundColor: 'black', padding: 0, zIndex: 9999, position: 'relative' }}
                 closable={false}
                 placement="left"
+                width={300}
                 headerStyle={{ padding: 0 }}
                 bodyStyle={{ padding: 0 }}
                 title={
@@ -48,29 +161,110 @@ const DrawerMobileMenu = ({}: Props) => {
             >
                 <Tabs defaultActiveKey="1" tabBarStyle={{ display: 'flex', justifyContent: 'center' }}>
                     <TabPane
-                        tab={<h1 className="text-center hover:text-content transition-all duration-75 w-full">Menu</h1>}
+                        tab={
+                            <h1 className="text-center text-sm uppercase hover:text-content transition-all duration-75 w-full">
+                                Menu
+                            </h1>
+                        }
                         key={'1'}
                     >
-                        <ul>
-                            <li className="text-white pl-2">
-                                <div className="flex items-center justify-between">
-                                    <h1>Navigation</h1>
-                                    <button className="hover:opacity-60 px-3 py-2">
-                                        <RightOutlined />
-                                    </button>
-                                </div>
-                            </li>
-                        </ul>
+                        <Menu
+                            style={{ backgroundColor: 'transparent' }}
+                            mode="inline"
+                            theme="dark"
+                            items={items}
+                        ></Menu>
                     </TabPane>
                     <TabPane
                         tab={
-                            <h1 className=" text-center hover:text-content transition-all duration-75 w-full">
+                            <h1 className=" text-center text-sm uppercase hover:text-content transition-all duration-75 w-full">
                                 Danh mục
                             </h1>
                         }
                         key={'2'}
                     >
-                        Heelo 2
+                        <ul>
+                            <li className="leading-[50px]">
+                                <Link
+                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    href={''}
+                                >
+                                    OFFICIAL MERCHANDISE
+                                </Link>
+                            </li>
+                            <li className="leading-[50px]">
+                                <Link
+                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    href={''}
+                                >
+                                    OFFICIAL COLLABORATION
+                                </Link>
+                            </li>
+                            <li className="leading-[50px]">
+                                <Link
+                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    href={''}
+                                >
+                                    ACCESSORIES
+                                </Link>
+                            </li>
+                            <li className="leading-[50px]">
+                                <Link
+                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    href={''}
+                                >
+                                    ORNAMENT & DISPLAY
+                                </Link>
+                            </li>
+                            <li className="leading-[50px]">
+                                <Link
+                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    href={''}
+                                >
+                                    STATIONERY
+                                </Link>
+                            </li>
+                            <li className="leading-[50px]">
+                                <Link
+                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    href={''}
+                                >
+                                    TABLEWARE
+                                </Link>
+                            </li>
+                            <li className="leading-[50px]">
+                                <Link
+                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    href={''}
+                                >
+                                    HOME DECOR
+                                </Link>
+                            </li>
+                            <li className="leading-[50px]">
+                                <Link
+                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    href={''}
+                                >
+                                    TOYS
+                                </Link>
+                            </li>
+                            <li className="leading-[50px]">
+                                <Link
+                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    href={''}
+                                >
+                                    COMPUTER & ELECTRONICS
+                                </Link>
+                            </li>
+                            <li className="leading-[50px]">
+                                <Link
+                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    href={''}
+                                >
+                                    LIGHTING
+                                </Link>
+                            </li>
+                        </ul>
                     </TabPane>
                 </Tabs>
             </Drawer>
