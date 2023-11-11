@@ -208,7 +208,7 @@ const FooterFn = () => {
                     <div className="flex items-center gap-x-3">
                         <p className="text-xs font-semibold">SECURE PAYMENT BY</p>
 
-                        <div className="flex">
+                        <div className="flex flex-wrap">
                             {payments.map((item) => (
                                 <Image key={item} height={32} width={60} src={item} alt="" />
                             ))}

@@ -11,13 +11,14 @@ type Props = {
 
 const Sidebar = ({ collapsed }: Props) => {
     return (
-        <Sider trigger={null} collapsible collapsed={collapsed} theme={`light`} className="h-screen">
+        <Sider trigger={null} collapsible collapsed={collapsed} theme={`light`} className="h-screen bg-white">
             <div className="flex justify-center py-6 px-4 m-0 text-sm whitespace-nowrap text-slate-700">
                 <img src={'../vercel.svg'} className="w-full shadow " alt="" />
             </div>
             <Menu
                 theme="light"
                 mode="inline"
+                className="antd-menu-custom"
                 defaultSelectedKeys={['1']}
                 items={[
                     {

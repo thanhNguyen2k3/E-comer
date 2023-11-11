@@ -34,6 +34,20 @@ const DrawerCart = ({}: Props) => {
                 width={300}
                 onClose={onClose}
                 open={open}
+                footer={
+                    <div className="space-y-3 text-base font-semibold">
+                        <div className="flex justify-between">
+                            <h1>Tổng phụ:</h1>
+                            <span className="text-primary">199$</span>
+                        </div>
+                        <button className="uppercase text-sm w-full px-2 shadow-lg py-2 hover:opacity-90 h-full transition-all">
+                            Xem giỏ hàng
+                        </button>
+                        <button className="uppercase text-sm w-full px-2 shadow-lg py-2 h-full bg-primary text-white hover:bg-secondary transition-all">
+                            Thanh toán
+                        </button>
+                    </div>
+                }
             >
                 <ul className="flex flex-col gap-y-2">
                     {items.map((_item, index) => (

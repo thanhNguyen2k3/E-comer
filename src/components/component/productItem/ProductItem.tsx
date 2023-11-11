@@ -1,21 +1,30 @@
+'use client';
+
+import { ExtandProduct } from '@/types/extend';
+import { formartUSD } from '@/utils/formartUSD';
 import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import { Divider } from 'antd';
+import Link from 'next/link';
 
-type Props = {};
+type Props = {
+    product: ExtandProduct;
+};
 
-const ProductItem = ({}: Props) => {
+const ProductItem = ({ product }: Props) => {
     return (
         <div className="group hover:z-10 relative hover:shadow-2xl hover:-mt-4 bg-white transition-all duration-300">
             <div>
-                <img src="/abyss.webp" alt="" className="w-full h-full" />
+                <img src={`/uploads/${product.images[0]}`} alt="" className="w-full h-full object-cover" />
             </div>
             <div className="px-3 text-center py-2 space-y-1 ">
-                <h2 className="font-semibold text-base text-content max-md:text-[12.6px]">
-                    Cryo Abyss Mage Hooded Plush Blanket
-                </h2>
+                <Link
+                    href={`/shop/${product.category?.slug}/${product.slug}`}
+                    className="font-semibold text-base text-content max-md:text-[12.6px]"
+                >
+                    {product.name}
+                </Link>
                 <p className="text-sub text-sm max-md:text-[11px]">Official Merchandise</p>
-                <p className="text-primary font-bold max-md:text-[12.6px]">$58.99</p>
-                <div className="absolute z-[99] px-2 bg-white left-0 right-0 shadow opacity-0 group-hover:opacity-100">
+                <p className="text-primary font-bold max-md:text-[12.6px]">{formartUSD(product.price)}</p>
+                <div className="absolute z-[99] px-2 bg-white left-0 right-0 opacity-0 group-hover:opacity-100">
                     <p className="text-sub text-sm font-normal max-md:text-xs">
                         <span className="font-semibold max-md:text-xs">Official Genshin Impact Merchandise</span> Coral
                         fleece blanket with hood designed

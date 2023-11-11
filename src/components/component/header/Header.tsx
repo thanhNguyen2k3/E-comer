@@ -9,6 +9,7 @@ import { Dropdown, Space } from 'antd';
 import { CloudDownloadOutlined, FolderFilled, HeartOutlined, ShopFilled } from '@ant-design/icons';
 import { useWindowOffsetHeight } from '@/hooks/useWindowDimensions';
 import { motion } from 'framer-motion';
+import { usePathname, useRouter } from 'next/navigation';
 
 const items: MenuProps['items'] = [
     {
@@ -228,9 +229,14 @@ const Header = () => {
 
     const { offset } = useWindowOffsetHeight();
 
+    const router = usePathname();
+    let rootPathname = '/';
+
     return (
         <div className="relative">
-            <div className={`bg-header absolute top-0 left-0 right-0 bottom-0`}></div>
+            {router === rootPathname || router === '/shopping-cart' ? (
+                <div className={`bg-header absolute top-0 left-0 right-0 bottom-0`}></div>
+            ) : null}
             <div className={`lg:py-5 w-layout max-w-full mx-auto z-50 relative`}>
                 {/* Tablet and Window Interface start */}
 

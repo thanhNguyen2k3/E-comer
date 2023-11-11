@@ -27,32 +27,32 @@ function getItem(
 
 const items: MenuProps['items'] = [
     getItem(
-        <Link className="text-sm !text-white font-semibold uppercase block hover:text-white" href={''}>
+        <Link className="text-sm py-4 !text-white font-semibold uppercase block hover:text-white" href={''}>
             News & Events
         </Link>,
         'sub1',
         null,
         [
             getItem(
-                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                <Link className="text-sm py-4 !text-white font-normal block hover:text-white" href={''}>
                     News
                 </Link>,
                 'g1',
             ),
             getItem(
-                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                <Link className="text-sm py-4 !text-white font-normal block hover:text-white" href={''}>
                     Latest Game Merchandise
                 </Link>,
                 'g2',
             ),
             getItem(
-                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                <Link className="text-sm py-4 !text-white font-normal block hover:text-white" href={''}>
                     Wish Banner
                 </Link>,
                 'g3',
             ),
             getItem(
-                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                <Link className="text-sm py-4 !text-white font-normal block hover:text-white" href={''}>
                     Promotion Code
                 </Link>,
                 'g4',
@@ -61,7 +61,7 @@ const items: MenuProps['items'] = [
     ),
 
     getItem(
-        <Link className="text-sm !text-white uppercase font-semibold block hover:text-white" href={''}>
+        <Link className="text-sm py-4 !text-white uppercase font-semibold block hover:text-white" href={''}>
             Merch Shop
         </Link>,
         'sub2',
@@ -69,42 +69,42 @@ const items: MenuProps['items'] = [
     ),
 
     getItem(
-        <Link className="text-sm !text-white uppercase font-semibold block hover:text-white" href={''}>
+        <Link className="text-sm py-4 !text-white uppercase font-semibold block hover:text-white" href={''}>
             Characters
         </Link>,
         'sub3',
         null,
         [
             getItem(
-                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                <Link className="text-sm py-4 !text-white font-normal block hover:text-white" href={''}>
                     All Characters
                 </Link>,
                 '9',
                 <FolderOutlined />,
             ),
             getItem(
-                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                <Link className="text-sm py-4 !text-white font-normal block hover:text-white" href={''}>
                     Mondstadt
                 </Link>,
                 '10',
                 <FolderOutlined />,
             ),
             getItem(
-                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                <Link className="text-sm py-4 !text-white font-normal block hover:text-white" href={''}>
                     Liyue
                 </Link>,
                 '11',
                 <FolderOutlined />,
             ),
             getItem(
-                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                <Link className="text-sm py-4 !text-white font-normal block hover:text-white" href={''}>
                     Inazuma
                 </Link>,
                 '12',
                 <FolderOutlined />,
             ),
             getItem(
-                <Link className="text-sm !text-white font-normal block hover:text-white" href={''}>
+                <Link className="text-sm py-4 !text-white font-normal block hover:text-white" href={''}>
                     Sumeru
                 </Link>,
                 '13',
@@ -116,10 +116,6 @@ const items: MenuProps['items'] = [
 
 const DrawerMobileMenu = ({}: Props) => {
     const [open, setOpen] = useState(false);
-    const [children, setChildren] = useState<{ open: boolean; id: number | null }>({
-        open: false,
-        id: null,
-    });
 
     const showDrawer = () => {
         setOpen(true);
@@ -128,8 +124,6 @@ const DrawerMobileMenu = ({}: Props) => {
     const onClose = () => {
         setOpen(false);
     };
-
-    const text = ``;
 
     return (
         <div>
@@ -170,6 +164,7 @@ const DrawerMobileMenu = ({}: Props) => {
                     >
                         <Menu
                             style={{ backgroundColor: 'transparent' }}
+                            className="ant-menu-mobile-custom"
                             mode="inline"
                             theme="dark"
                             items={items}
@@ -186,7 +181,7 @@ const DrawerMobileMenu = ({}: Props) => {
                         <ul>
                             <li className="leading-[50px]">
                                 <Link
-                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    className="text-sm py-4 !text-white px-5 font-semibold block hover:text-white"
                                     href={''}
                                 >
                                     OFFICIAL MERCHANDISE
@@ -194,7 +189,7 @@ const DrawerMobileMenu = ({}: Props) => {
                             </li>
                             <li className="leading-[50px]">
                                 <Link
-                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    className="text-sm py-4 !text-white px-5 font-semibold block hover:text-white"
                                     href={''}
                                 >
                                     OFFICIAL COLLABORATION
@@ -202,7 +197,7 @@ const DrawerMobileMenu = ({}: Props) => {
                             </li>
                             <li className="leading-[50px]">
                                 <Link
-                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    className="text-sm py-4 !text-white px-5 font-semibold block hover:text-white"
                                     href={''}
                                 >
                                     ACCESSORIES
@@ -210,7 +205,7 @@ const DrawerMobileMenu = ({}: Props) => {
                             </li>
                             <li className="leading-[50px]">
                                 <Link
-                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    className="text-sm py-4 !text-white px-5 font-semibold block hover:text-white"
                                     href={''}
                                 >
                                     ORNAMENT & DISPLAY
@@ -218,7 +213,7 @@ const DrawerMobileMenu = ({}: Props) => {
                             </li>
                             <li className="leading-[50px]">
                                 <Link
-                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    className="text-sm py-4 !text-white px-5 font-semibold block hover:text-white"
                                     href={''}
                                 >
                                     STATIONERY
@@ -226,7 +221,7 @@ const DrawerMobileMenu = ({}: Props) => {
                             </li>
                             <li className="leading-[50px]">
                                 <Link
-                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    className="text-sm py-4 !text-white px-5 font-semibold block hover:text-white"
                                     href={''}
                                 >
                                     TABLEWARE
@@ -234,7 +229,7 @@ const DrawerMobileMenu = ({}: Props) => {
                             </li>
                             <li className="leading-[50px]">
                                 <Link
-                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    className="text-sm py-4 !text-white px-5 font-semibold block hover:text-white"
                                     href={''}
                                 >
                                     HOME DECOR
@@ -242,7 +237,7 @@ const DrawerMobileMenu = ({}: Props) => {
                             </li>
                             <li className="leading-[50px]">
                                 <Link
-                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    className="text-sm py-4 !text-white px-5 font-semibold block hover:text-white"
                                     href={''}
                                 >
                                     TOYS
@@ -250,7 +245,7 @@ const DrawerMobileMenu = ({}: Props) => {
                             </li>
                             <li className="leading-[50px]">
                                 <Link
-                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    className="text-sm py-4 !text-white px-5 font-semibold block hover:text-white"
                                     href={''}
                                 >
                                     COMPUTER & ELECTRONICS
@@ -258,7 +253,7 @@ const DrawerMobileMenu = ({}: Props) => {
                             </li>
                             <li className="leading-[50px]">
                                 <Link
-                                    className="text-sm !text-white px-5 font-semibold block hover:text-white"
+                                    className="text-sm py-4 !text-white px-5 font-semibold block hover:text-white"
                                     href={''}
                                 >
                                     LIGHTING

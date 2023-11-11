@@ -20,6 +20,10 @@ a:hover {
     color: #6eb89f;
 }
 
+input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
 /*
     custom css start
 */
@@ -128,6 +132,10 @@ a:hover {
     border-bottom: 2px solid red !important;
 }
 
+.antd-menu-custom {
+    background-color: #fff !important;
+}
+
 .ant-menu-item-selected {
     background-color: #000 !important;
     padding: 0;
@@ -145,7 +153,7 @@ a:hover {
     padding-left: 24px !important;
 }
 .ant-menu-inline {
-    background-color: #000 !important;
+    background-color: #000;
 }
 
 .ant-menu-title-content {
@@ -169,12 +177,38 @@ a:hover {
     color: #000 !important;
 }
 
+.ant-menu-title-content {
+    color: #000 !important;
+}
+
+.ant-menu-item-selected {
+    background-color: #fff !important;
+}
+
+.ant-menu-item-selected .ant-menu-title-content {
+    color: #000;
+}
+
+.anticon .anticon-user .ant-menu-item-icon {
+    color: #000 !important;
+}
+
 :where(.css-dev-only-do-not-override-amq5gd).ant-menu-light:not(.ant-menu-horizontal)
     .ant-menu-item:not(.ant-menu-item-selected):hover,
 :where(.css-dev-only-do-not-override-amq5gd).ant-menu-light
     > .ant-menu:not(.ant-menu-horizontal)
     .ant-menu-item:not(.ant-menu-item-selected):hover {
     background-color: #fff;
+}
+
+/* Css Menu mobile */
+
+.ant-menu-mobile-custom li {
+    background-color: #000 !important;
+}
+
+.ant-menu-mobile-custom .ant-menu-sub {
+    background-color: #000 !important;
 }
 
 /* Slides*/
@@ -210,4 +244,20 @@ a:hover {
 
 .ant-dropdown-menu-sub {
     min-width: 220px;
+}
+
+/* Swiper */
+
+.swiper-small-custom .swiper-wrapper {
+    display: grid !important;
+}
+
+.swiper-small-custom .swiper-wrapper .swiper-slide {
+    width: 100% !important;
+}
+
+/* Radio antd */
+
+.antd-radio-custom :where(.css-dev-only-do-not-override-amq5gd).ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+    background-color: #6eb89f;
 }
