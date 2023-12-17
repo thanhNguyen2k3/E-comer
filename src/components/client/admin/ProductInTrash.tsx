@@ -1,51 +1,38 @@
 'use client';
 
 import { DeleteOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons';
-import { Category, ExtraOption, Product } from '@prisma/client';
+import { Category, Option, Product } from '@prisma/client';
 import { Button, Input, InputRef, Modal, Space, Table } from 'antd';
 import { ColumnType, ColumnsType, FilterConfirmProps } from 'antd/es/table/interface';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import ExtraEditable from '../../server/ExtraEditable';
-import { useRouter, useSearchParams } from 'next/navigation';
-import CreateProduct from '@/components/admin/form/product/Create';
+import { useRouter } from 'next/navigation';
 import instance from '@/lib/axios';
 import { FaTrashRestore } from 'react-icons/fa';
 const { confirm } = Modal;
 
 type ExtendProduct = Product & {
     category: Category;
-    extraOption: ExtraOption[];
+    options: Option[];
 };
 
 type Props = {
     products: Product[];
-    extraOptions?: ExtraOption[];
+    options?: Option[];
     categories?: Category[];
 };
 
 type DataIndex = keyof ExtendProduct;
 
-const ProductInTrash = ({ products, extraOptions, categories }: Props) => {
+const ProductInTrash = ({ products }: Props) => {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const productId = searchParams.get('productId');
 
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const searchInput = useRef<InputRef>(null);
 
     const showRestore = (record: ExtendProduct) => {
-        const rest = record.extraOption.map((extra) => {
-            const { extraName, extraPrice } = extra;
-
-            return { extraName, extraPrice };
-        });
-
-        const { slug, id, createdAt, updatedAt, category, ...spread } = record;
-
         confirm({
             title: (
                 <p>
@@ -63,9 +50,7 @@ const ProductInTrash = ({ products, extraOptions, categories }: Props) => {
             cancelText: 'Hủy',
             onOk: async () => {
                 const { status } = await instance.patch(`/api/pr/product/${record.id}/restore`, {
-                    ...spread,
                     deleted: false,
-                    extraOption: rest,
                 });
                 if (status === 200) {
                     router.refresh();
@@ -100,15 +85,6 @@ const ProductInTrash = ({ products, extraOptions, categories }: Props) => {
                 console.log('Cancel');
             },
         });
-    };
-
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleCancel = () => {
-        router.push('products');
-        setIsModalOpen(false);
     };
 
     const handleSearch = (
@@ -208,7 +184,6 @@ const ProductInTrash = ({ products, extraOptions, categories }: Props) => {
             key: 'name',
             width: '20%',
             ...getColumnSearchProps('name'),
-            fixed: 'left',
         },
         {
             title: 'Giá',
@@ -254,30 +229,9 @@ const ProductInTrash = ({ products, extraOptions, categories }: Props) => {
     return (
         <div>
             {/* Thêm sản phẩm */}
-            <CreateProduct categories={categories!} />
 
             {/* Data Grid */}
-            <Table
-                rowSelection={{}}
-                expandable={{
-                    expandedRowRender: (record) => <p>{record.shortDes}</p>,
-                }}
-                rowKey={'id'}
-                columns={columns as any}
-                dataSource={products}
-                scroll={{ x: 1000 }}
-            />
-
-            {/* Modal update ExtraOption */}
-            <Modal
-                title="Chi phí phát sinh"
-                okType="default"
-                open={isModalOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
-            >
-                <ExtraEditable productId={productId!} extraOptions={extraOptions!} />
-            </Modal>
+            <Table rowKey={'id'} columns={columns as any} dataSource={products} scroll={{ x: 1000 }} />
         </div>
     );
 };

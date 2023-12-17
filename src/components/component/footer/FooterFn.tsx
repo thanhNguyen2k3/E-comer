@@ -17,19 +17,19 @@ const networks = [
     {
         id: 1,
         icon: <BiLogoFacebook />,
-        link: '',
+        link: '/',
         css: 'bg-[#365493]',
     },
     {
         id: 2,
         icon: <BiLogoTwitter />,
-        link: '',
+        link: '/',
         css: 'bg-[#3CF]',
     },
     {
         id: 3,
         icon: <BiLogoGmail />,
-        link: '',
+        link: '/',
         css: 'bg-[#F89A1E]',
     },
     {
@@ -41,13 +41,13 @@ const networks = [
     {
         id: 5,
         icon: <BiLogoWhatsapp />,
-        link: '',
+        link: '/',
         css: 'bg-[#1EBEA5]',
     },
     {
         id: 6,
         icon: <BiLogoTelegram />,
-        link: '',
+        link: '/',
         css: 'bg-[#37AEE2]',
     },
 ];
@@ -103,7 +103,7 @@ const FooterFn = () => {
                                 <Link
                                     className={`${network.css} flex justify-center items-center rounded-full !text-white text-base w-[30px] h-[30px]`}
                                     key={network.id}
-                                    href={network.link}
+                                    href={`${network.link}`}
                                 >
                                     {network.icon}
                                 </Link>
@@ -147,14 +147,14 @@ const FooterFn = () => {
                             mục đích cung cấp thông tin và không đại diện cho quan điểm của Hoyoverse.
                         </p>
 
-                        <a href="" className="underline my-4 inline-block font-semibold !text-white uppercase">
+                        <a href="/" className="underline my-4 inline-block font-semibold !text-white uppercase">
                             THÊM VỀ GENSHIN.GLOBAL
                         </a>
 
                         <div className="flex gap-x-2">
                             {networks.slice(0, 4).map((item) => (
                                 <a
-                                    href=""
+                                    href="/"
                                     key={item.id}
                                     className="!text-white text-base flex items-center justify-center bg-[#ffffff4d] w-[30px] h-[30px]"
                                 >
@@ -180,7 +180,7 @@ const FooterFn = () => {
                                 <div className="flex items-center gap-x-2">
                                     <Image src={item.thumbnail} width={60} height={60} alt="" />
                                     <div className="space-y-2">
-                                        <a href="" className="text-white text-sm font-medium hover:text-gray-300">
+                                        <a href="/" className="text-white text-sm font-medium hover:text-gray-300">
                                             {item.title}
                                         </a>
                                         <p className="text-nav">{item.time}</p>

@@ -1,9 +1,13 @@
 import { Alert } from 'antd';
 
-const AlertError = () => {
+type Props = {
+    message?: string;
+};
+
+const AlertError = ({ message }: Props) => {
     return (
         <Alert
-            message="Sản phẩm này hiện không tồn tại"
+            message={message}
             description="Vui lòng quay lại trang chủ để tìm kiếm sản phẩm khác mà bạn muốn."
             type="error"
             showIcon

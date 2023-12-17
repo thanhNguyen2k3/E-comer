@@ -1,8 +1,9 @@
 'use client';
 
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons';
-import { Category, ExtraOption, Product } from '@prisma/client';
-import { Button, Input, InputRef, Modal, Space, Table } from 'antd';
+import { Category, Option, Product } from '@prisma/client';
+import { Button, Input, InputRef, Modal, Space, Table, message } from 'antd';
+
 import { ColumnType, ColumnsType, FilterConfirmProps } from 'antd/es/table/interface';
 import { Key, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
@@ -11,23 +12,24 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import CreateProduct from '@/components/admin/form/product/Create';
 import instance from '@/lib/axios';
+import styled from 'styled-components';
+import ButtonComponent from '@/components/local/Button';
+import { formartUSD } from '@/utils/formartUSD';
+import { ExtandProduct } from '@/types/extend';
 
 const { confirm } = Modal;
 
-type ExtendProduct = Product & {
-    category: Category;
-    extraOption: ExtraOption[];
-};
-
 type Props = {
     products: Product[];
-    extraOptions?: ExtraOption[];
+    options?: Option[];
     categories?: Category[];
 };
 
-type DataIndex = keyof ExtendProduct;
+type DataIndex = keyof ExtandProduct;
 
-const ProductData = ({ products, extraOptions, categories }: Props) => {
+const StyleTable = styled(Table)``;
+
+const ProductData = ({ products, options, categories }: Props) => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const productId = searchParams.get('productId');
@@ -55,15 +57,7 @@ const ProductData = ({ products, extraOptions, categories }: Props) => {
         onChange: onSelectChange,
     };
 
-    const showDeleteConfirm = (record: ExtendProduct) => {
-        const rest = record.extraOption.map((extra) => {
-            const { extraName, extraPrice } = extra;
-
-            return { extraName, extraPrice };
-        });
-
-        const { slug, id, createdAt, updatedAt, category, ...spread } = record;
-
+    const showDeleteConfirm = (record: ExtandProduct) => {
         confirm({
             title: (
                 <p>
@@ -80,13 +74,17 @@ const ProductData = ({ products, extraOptions, categories }: Props) => {
             okType: 'danger',
             cancelText: 'Hủy',
             onOk: async () => {
-                const { status } = await instance.patch(`/api/pr/product/${record.id}/soft-delete`, {
-                    ...spread,
-                    deleted: true,
-                    extraOption: rest,
-                });
-                if (status === 200) {
-                    router.refresh();
+                try {
+                    const { status } = await instance.patch(`/api/pr/product/${record.id}/soft-delete`, {
+                        deleted: true,
+                    });
+                    if (status === 200) {
+                        message.success('Đã xóa thành công');
+                        router.refresh();
+                    }
+                } catch (error: any) {
+                    console.log(error.message);
+                    message.error(error.message);
                 }
             },
             onCancel() {
@@ -123,7 +121,7 @@ const ProductData = ({ products, extraOptions, categories }: Props) => {
         setSearchText('');
     };
 
-    const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<ExtendProduct> => ({
+    const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<ExtandProduct> => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
                 <Input
@@ -136,7 +134,7 @@ const ProductData = ({ products, extraOptions, categories }: Props) => {
                 />
                 <Space>
                     <Button
-                        type="primary"
+                        type="default"
                         onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
                         icon={<SearchOutlined />}
                         size="small"
@@ -198,25 +196,28 @@ const ProductData = ({ products, extraOptions, categories }: Props) => {
             ),
     });
 
-    const columns: ColumnsType<ExtendProduct> = [
+    const columns: ColumnsType<ExtandProduct> = [
         {
             title: 'Tên',
             dataIndex: 'name',
             key: 'name',
             width: '20%',
             ...getColumnSearchProps('name'),
-            fixed: 'left',
         },
         {
             title: 'Giá',
             dataIndex: 'price',
             key: 'price',
-            width: '20%',
+            width: '15%',
+            render: (price) => formartUSD(price),
         },
         {
-            title: 'Sale',
-            dataIndex: 'saleOff',
-            key: 'saleOff',
+            title: 'Trong kho',
+            dataIndex: 'inStock',
+            key: 'inStock',
+            render: (record) => {
+                return record <= 0 ? <span className="text-red-500">Hết hàng</span> : <span>{record}</span>;
+            },
         },
         {
             title: 'Loại hàng',
@@ -245,20 +246,14 @@ const ProductData = ({ products, extraOptions, categories }: Props) => {
             fixed: 'right',
             width: 120,
             render: (record) => (
-                <div>
-                    <Button
-                        type="default"
-                        icon={
-                            <Link href={`products/${record.slug}`}>
-                                <EditOutlined />
-                            </Link>
-                        }
-                    />
-                    <Button
+                <div className="flex items-center gap-x-2">
+                    <Link href={`products/${record.slug}`}>
+                        <ButtonComponent icon={<EditOutlined />} />
+                    </Link>
+                    <ButtonComponent
                         onClick={() => showDeleteConfirm(record)}
                         type="default"
-                        className="ml-2"
-                        danger
+                        className="!bg-red-400"
                         icon={<DeleteOutlined />}
                     />
                 </div>
@@ -269,15 +264,11 @@ const ProductData = ({ products, extraOptions, categories }: Props) => {
     return (
         <div>
             {/* Thêm sản phẩm */}
-            <CreateProduct categories={categories!} />
 
             <span style={{ marginLeft: 8 }}>{hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}</span>
             {/* Data Grid */}
-            <Table
+            <StyleTable
                 rowSelection={rowSelection}
-                expandable={{
-                    expandedRowRender: (record) => <p>{record.shortDes}</p>,
-                }}
                 rowKey={'id'}
                 columns={columns as any}
                 dataSource={products}
@@ -292,7 +283,7 @@ const ProductData = ({ products, extraOptions, categories }: Props) => {
                 onOk={handleOk}
                 onCancel={handleCancel}
             >
-                <ExtraEditable productId={productId!} extraOptions={extraOptions!} />
+                <ExtraEditable productId={productId!} options={options!} />
             </Modal>
         </div>
     );

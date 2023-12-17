@@ -1,19 +1,14 @@
-import { db } from '@/lib/db';
+'use client';
+
+import { AnimatePresence } from 'framer-motion';
 import ProductItem from '../productItem/ProductItem';
+import { ExtandProduct } from '@/types/extend';
 
-type Props = {};
+type Props = {
+    products: ExtandProduct[];
+};
 
-const ProductGoodies = async ({}: Props) => {
-    const products = await db.product.findMany({
-        where: {
-            deleted: false,
-        },
-        include: {
-            category: true,
-            extraOption: true,
-        },
-    });
-
+const ProductGoodies = ({ products }: Props) => {
     return (
         <div className="my-6">
             <h1 className="font-semibold text-4xl text-nav text-center">Quà Tặng Teyvat</h1>

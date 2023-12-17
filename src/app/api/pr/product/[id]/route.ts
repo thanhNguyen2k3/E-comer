@@ -15,7 +15,7 @@ export const GET = async ({ params: { id } }: Params) => {
             },
             include: {
                 category: true,
-                extraOption: true,
+                options: true,
             },
         });
 
@@ -32,20 +32,7 @@ export const PATCH = async (req: NextRequest, { params: { id } }: Params) => {
     try {
         const body = await req.json();
 
-        const {
-            name,
-            shortDes,
-            description,
-            price,
-            sizes,
-            saleOff,
-            categoryId,
-            extraName,
-            extraPrice,
-            quantity,
-            images,
-            extraOption = [{ extraName, extraPrice }],
-        } = body;
+        const { name, shortDes, description, price, saleOff, categoryId, inStock, images } = body;
 
         const product = await db.product.update({
             where: {
@@ -58,15 +45,8 @@ export const PATCH = async (req: NextRequest, { params: { id } }: Params) => {
                 price,
                 categoryId,
                 saleOff,
-                sizes,
-                quantity,
+                inStock,
                 images,
-                extraOption: {
-                    deleteMany: {
-                        productId: id,
-                    },
-                    create: extraOption,
-                },
             },
         });
 

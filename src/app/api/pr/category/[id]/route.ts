@@ -7,17 +7,17 @@ type Params = {
     };
 };
 
-export const GET = async ({ params: { id } }: Params) => {
+export const GET = async (_req: NextRequest, { params: { id } }: Params) => {
     try {
-        const existingCategory = await db.category.findFirst({
+        if (!id) return NextResponse.json({ message: 'Không có danh mục này' });
+
+        const existingCategory = await db.category.findUnique({
             where: {
                 id,
             },
         });
 
-        if (!existingCategory) return new NextResponse(JSON.stringify({ message: 'Không có danh mục này' }));
-
-        return new NextResponse(JSON.stringify(existingCategory), { status: 200 });
+        return NextResponse.json(existingCategory, { status: 200 });
     } catch (error) {
         return new NextResponse(JSON.stringify((error as any).message), { status: 400 });
     }
@@ -41,7 +41,21 @@ export const PATCH = async (req: NextRequest, { params: { id } }: Params) => {
             },
         });
 
-        return new NextResponse(JSON.stringify(newCategory), { status: 200 });
+        return NextResponse.json(newCategory, { status: 200 });
+    } catch (error) {
+        return new NextResponse(JSON.stringify((error as any).message), { status: 400 });
+    }
+};
+
+export const DELETE = async (_req: NextRequest, { params: { id } }: Params) => {
+    try {
+        await db.category.delete({
+            where: {
+                id,
+            },
+        });
+
+        return NextResponse.json({ message: 'Xóa danh mục thành công' }, { status: 200 });
     } catch (error) {
         return new NextResponse(JSON.stringify((error as any).message), { status: 400 });
     }

@@ -14,7 +14,7 @@ const Page = async ({ params: { slug } }: Params) => {
             slug,
         },
         include: {
-            extraOption: true,
+            options: true,
             category: true,
         },
     });

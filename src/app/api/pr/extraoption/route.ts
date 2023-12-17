@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async () => {
     try {
-        const extraOptions = await db.extraOption.findMany({
+        const extraOptions = await db.option.findMany({
             include: {
                 product: true,
             },
@@ -23,7 +23,7 @@ export const POST = async (req: NextRequest) => {
     try {
         const { extraName, extraPrice, productId } = body;
 
-        const newExtraOption = await db.extraOption.create({
+        const newExtraOption = await db.option.create({
             data: {
                 extraName,
                 extraPrice,

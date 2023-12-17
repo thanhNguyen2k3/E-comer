@@ -42,33 +42,47 @@ model User {
     isAdmin         Boolean   @default(false)
     username        String?   @unique
     address         String?
-    fullName        String?
+    fullName        String?   @default("")
     specificAddress String?
     phoneNumber     Int?
     accounts        Account[]
     sessions        Session[]
-    Order           Order[]
+    orders          Order[]   @relation("UserToOrder")
     image           String?
 }
 
 model Product {
-    id          String        @id @default(cuid())
+    id          String   @id @default(cuid())
     name        String
     shortDes    String
     description String
     images      String[]
     price       Int
-    saleOff     Int?          @default(0)
-    slug        String?       @unique
-    categoryId  String?
-    quantity    Int?
-    category    Category?     @relation(fields: [categoryId], references: [id])
-    extraOption ExtraOption[]
-    sizes       String[]
-    orders      Order[]
-    deleted     Boolean       @default(false)
-    createdAt   DateTime      @default(now())
-    updatedAt   DateTime      @updatedAt
+    saleOff     Int?     @default(0)
+    slug        String?  @unique
+    quantity    Int      @default(1)
+    inStock     Int      @default(0)
+    selled      Int      @default(0)
+
+    categoryId String?
+    brandId    String?
+    category   Category? @relation(fields: [categoryId], references: [id])
+    brand      Brand?    @relation(fields: [brandId], references: [id])
+
+    options    Option[]
+    orderItems OrderItem[]
+
+    groupCharacter GroupCharacter[]
+
+    isArchived Boolean @default(false)
+    deleted    Boolean @default(false)
+
+    inActive Boolean @default(true)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([categoryId, brandId])
 }
 
 model Category {
@@ -79,7 +93,51 @@ model Category {
     products  Product[]
 }
 
-model ExtraOption {
+model Brand {
+    id       String    @id @default(cuid())
+    name     String
+    slug     String?
+    products Product[]
+}
+
+model Character {
+    id        String @id @default(cuid())
+    name      String
+    thumbnail String
+
+    regionId String
+    region   Region @relation(fields: [regionId], references: [id])
+
+    visionId String
+    vision   Vision @relation(fields: [visionId], references: [id])
+
+    weaponId String
+    weapon   Weapon @relation(fields: [weaponId], references: [id])
+
+    groupCharacter GroupCharacter[]
+
+    @@index([regionId, visionId, weaponId])
+}
+
+model Region {
+    id         String      @id @default(cuid())
+    name       String
+    characters Character[]
+}
+
+model Weapon {
+    id         String      @id @default(cuid())
+    name       String
+    characters Character[]
+}
+
+model Vision {
+    id         String      @id @default(cuid())
+    name       String
+    characters Character[]
+}
+
+model Option {
     id         String   @id @default(cuid())
     extraName  String
     productId  String?
@@ -87,26 +145,51 @@ model ExtraOption {
     product    Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
-model Order {
-    id         String      @id @default(cuid())
-    productId  String?
-    products   Product?    @relation(fields: [productId], references: [id])
-    userId     String
-    user       User        @relation(fields: [userId], references: [id])
-    shipId     String?
-    shipOption ShipOption? @relation(fields: [shipId], references: [id])
-    quantity   Int?
-    total      Int?
-    extraName  String?
-    status     StatusOrder
-    createdAt  DateTime    @default(now())
-    updatedAt  DateTime    @updatedAt
+model GroupCharacter {
+    id        String  @id @default(cuid())
+    productId String
+    product   Product @relation(fields: [productId], references: [id])
+
+    characterId String
+    character   Character @relation(fields: [characterId], references: [id])
+
+    @@index([productId])
+    @@index([characterId])
 }
 
-model ShipOption {
-    id     String  @id @default(cuid())
-    status String
-    orders Order[]
+model Order {
+    id         String      @id @default(cuid())
+    userId     String
+    user       User        @relation("UserToOrder", fields: [userId], references: [id])
+    fullName   String      @default("")
+    orderItems OrderItem[]
+    isPaid     Boolean     @default(false)
+
+    payMethod      Int @default(1)
+    deliveryMethod Int @default(1)
+    total          Int @default(0)
+
+    phone     String   @default("")
+    address   String   @default("")
+    deleted   Boolean  @default(false)
+    status    Int      @default(1)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+}
+
+model OrderItem {
+    id        String  @id @default(cuid())
+    orderId   String
+    order     Order   @relation(fields: [orderId], references: [id])
+    productId String
+    product   Product @relation(fields: [productId], references: [id])
+    quantity  Int     @default(1)
+    name      String
+
+    @@index([orderId])
+    @@index([productId])
 }
 
 enum StatusOrder {

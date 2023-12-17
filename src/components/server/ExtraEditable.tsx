@@ -1,6 +1,6 @@
 import React, { FC, HTMLAttributes, Key, ReactNode, useEffect, useState } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
-import { ExtraOption } from '@prisma/client';
+import { Option } from '@prisma/client';
 import instance from '@/lib/axios';
 import { useRouter } from 'next/navigation';
 
@@ -9,7 +9,7 @@ interface EditableCellProps extends HTMLAttributes<HTMLElement> {
     dataIndex: string;
     title: any;
     inputType: 'number' | 'text';
-    record: ExtraOption;
+    record: Option;
     index: number;
     children: ReactNode;
 }
@@ -49,22 +49,22 @@ const EditableCell: FC<EditableCellProps> = ({
 };
 
 type Props = {
-    extraOptions: ExtraOption[];
+    options: Option[];
     productId?: string;
 };
 
-const ExtraEditable = ({ productId, extraOptions }: Props) => {
+const ExtraEditable = ({ productId, options }: Props) => {
     const router = useRouter();
 
     const [form] = Form.useForm();
 
-    const data = extraOptions.filter((extra) => extra.productId === productId);
+    const data = options.filter((extra) => extra.productId === productId);
 
     const [editingKey, setEditingKey] = useState('');
 
-    const isEditing = (record: ExtraOption) => record.id === editingKey;
+    const isEditing = (record: Option) => record.id === editingKey;
 
-    const edit = (record: Partial<ExtraOption>) => {
+    const edit = (record: Partial<Option>) => {
         form.setFieldsValue({ extraName: '', extraPrice: '', ...record });
         setEditingKey(record.id!);
     };
@@ -75,7 +75,7 @@ const ExtraEditable = ({ productId, extraOptions }: Props) => {
 
     const save = async (id: string) => {
         try {
-            const row = (await form.validateFields()) as ExtraOption;
+            const row = (await form.validateFields()) as Option;
 
             const newData = [...data];
 
@@ -123,7 +123,7 @@ const ExtraEditable = ({ productId, extraOptions }: Props) => {
         {
             title: 'operation',
             dataIndex: 'operation',
-            render: (_: any, record: ExtraOption) => {
+            render: (_: any, record: Option) => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
@@ -149,7 +149,7 @@ const ExtraEditable = ({ productId, extraOptions }: Props) => {
         }
         return {
             ...col,
-            onCell: (record: ExtraOption) => ({
+            onCell: (record: Option) => ({
                 record,
                 inputType: col.dataIndex === 'extraPrice' ? 'number' : 'text',
                 dataIndex: col.dataIndex,

@@ -1,4 +1,4 @@
-import { ExtraOption, Product } from '@prisma/client';
+import { Option, Product } from '@prisma/client';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 type ProductApiInput = {
@@ -8,14 +8,14 @@ type ProductApiInput = {
     price: number;
     saleOff: number;
     categoryId: string;
-    extraOption: {
+    options: {
         extraName: string;
         extraPrice: number;
     };
 };
 
 interface ExtendProduct extends Product {
-    extraOption: ExtraOption;
+    options: Option;
 }
 
 const productApi = createApi({

@@ -11,21 +11,7 @@ export const PATCH = async (req: NextRequest, { params: { id } }: Params) => {
     const body = await req.json();
 
     try {
-        const {
-            name,
-            shortDes,
-            description,
-            price,
-            saleOff,
-            categoryId,
-            sizes,
-            extraName,
-            extraPrice,
-            quantity,
-            images,
-            deleted,
-            extraOption = [{ extraName, extraPrice }],
-        } = body;
+        const { deleted } = body;
 
         const existingProduct = await db.product.findFirst({
             where: {
@@ -40,22 +26,7 @@ export const PATCH = async (req: NextRequest, { params: { id } }: Params) => {
                 id,
             },
             data: {
-                name,
-                shortDes,
-                description,
-                price,
-                sizes,
-                saleOff,
-                categoryId,
-                quantity,
-                images,
                 deleted,
-                extraOption: {
-                    deleteMany: {
-                        productId: id,
-                    },
-                    create: extraOption,
-                },
             },
         });
 

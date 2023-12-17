@@ -13,15 +13,20 @@ const Page = async ({ searchParams }: Props) => {
             deleted: false,
         },
         include: {
-            extraOption: true,
+            options: true,
             category: true,
+            groupCharacter: {
+                include: {
+                    character: true,
+                },
+            },
         },
         orderBy: {
             createdAt: 'desc',
         },
     });
 
-    const extraOptions = await db.extraOption.findMany({
+    const extraOptions = await db.option.findMany({
         where: {
             productId: productId as string,
         },
@@ -32,7 +37,7 @@ const Page = async ({ searchParams }: Props) => {
 
     const categories = await db.category.findMany();
 
-    return <ProductData products={products} extraOptions={extraOptions} categories={categories} />;
+    return <ProductData products={products} options={extraOptions} categories={categories} />;
 };
 
 export default Page;

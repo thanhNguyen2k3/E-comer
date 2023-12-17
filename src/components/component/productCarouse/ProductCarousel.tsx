@@ -1,16 +1,29 @@
 'use client';
 
-import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import { Tooltip } from 'antd';
-import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import { useMediaQuery } from 'react-responsive';
+import { ExtandProduct } from '@/types/extend';
+import styled from 'styled-components';
+import ProductMerch from '../productMerch/ProductMerch';
 
-type Props = {};
+type Props = {
+    products: ExtandProduct[];
+    heading?: string;
+};
 
-const ProductCarousel = ({}: Props) => {
+const StyleSliderWrapper = styled(Swiper)`
+    .swiper-pagination-bullet {
+        border: 1px solid #fff;
+    }
+    .swiper-pagination-bullet-active {
+        background: #333;
+        border: 1px solid #333;
+    }
+`;
+
+const ProductCarousel = ({ products, heading }: Props) => {
     const isMediumScreen = useMediaQuery({
         query: '(max-width: 768px)',
     });
@@ -42,91 +55,38 @@ const ProductCarousel = ({}: Props) => {
         },
     };
 
+    const [delay, setDelay] = useState(2500);
+
     return (
         <section className="mx-auto w-layout max-w-full">
-            <h1 className="font-semibold text-4xl text-nav mt-6 mb-10 text-center">Latest Merch</h1>
+            {heading ? (
+                <h2 className="text-xl mb-4 py-2 uppercase font-semibold relative before:absolute before:w-[40px] before:h-[2px] before:bg-primary before:left-0 before:bottom-0">
+                    {heading}
+                </h2>
+            ) : (
+                <h1 className="font-semibold text-4xl text-nav mt-6 mb-10 text-center">Latest Merch</h1>
+            )}
 
-            <Swiper
+            <StyleSliderWrapper
+                onMouseOver={() => setDelay(delay * 60 * 1000)}
                 slidesPerView={isSmallScreen ? 2 : isMediumScreen ? 3 : 4}
                 spaceBetween={isSmallScreen ? 10 : isMediumScreen ? 15 : 20}
                 pagination={pagination}
                 autoplay={{
-                    delay: 2500,
+                    delay: delay,
                     disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                    stopOnLastSlide: false,
                 }}
                 modules={[Pagination, Autoplay]}
-                className="max-[420px]:h-[330px] h-[436px]"
+                className="h-[330px] lg:h-[436px]"
             >
-                {[...new Array(10)].map((item, index) => (
+                {products.map((item, index) => (
                     <SwiperSlide key={index}>
-                        <div className="relative z-20 group">
-                            <div className="relative block overflow-hidden ">
-                                <a
-                                    href=""
-                                    className={`block relative ${
-                                        media320
-                                            ? 'h-[155px]'
-                                            : media375
-                                            ? 'h-[182px]'
-                                            : media425
-                                            ? 'h-[246px]'
-                                            : isMediumScreen
-                                            ? 'h-[240px]'
-                                            : media1024
-                                            ? 'h-[233px]'
-                                            : 'h-[283px]'
-                                    }  w-full`}
-                                >
-                                    <img
-                                        className="z-20 opacity-100 duration-[1500ms] hover:opacity-0 object-cover top-0 left-0 right-0 bottom-0 absolute w-full h-full transition-all group-hover:scale-110"
-                                        src="https://i.postimg.cc/x8LtrkfV/kenny-eliason-HIz-Gn9-FZDFU-unsplash.jpg"
-                                        alt=""
-                                    />
-
-                                    <img
-                                        className={`opacity-100 w-full h-full duration-[1500ms] z-10 top-0 left-0 right-0 bottom-0 absolute transition-all group-hover:scale-110`}
-                                        src="https://i.postimg.cc/K8qmN64m/pexels-javon-swaby-2783873.jpg"
-                                        alt=""
-                                    />
-                                </a>
-                                <div className="absolute z-30 flex flex-col top-2 right-2">
-                                    <Tooltip placement="left" title="Add to wish">
-                                        <button className="flex items-center">
-                                            <div className="relative flex items-center justify-center p-3 transition-all translate-x-20 bg-white dark:text-white group-hover:translate-x-0">
-                                                <HeartOutlined className="text-xl text-nav" />
-                                            </div>
-                                        </button>
-                                    </Tooltip>
-                                    <Tooltip placement="left" title="Add to cart">
-                                        <button className="flex items-center">
-                                            <div className="relative flex items-center justify-center p-3 transition-all translate-x-20 bg-white dark:text-white group-hover:translate-x-0">
-                                                <ShoppingCartOutlined className="text-xl text-nav" />
-                                            </div>
-                                        </button>
-                                    </Tooltip>
-                                </div>
-                            </div>
-
-                            <div className="text-center mt-2 space-y-1">
-                                <h1>
-                                    <Link href={''} className="mb-2 text-sm font-semibold text-content hover:text-sub">
-                                        1800X Zoom Level Nikon Lense
-                                    </Link>
-                                </h1>
-
-                                <div>
-                                    <p>
-                                        <Link href={''} className="text-sub">
-                                            Honkai: Star Rail Official Merchandise
-                                        </Link>
-                                    </p>
-                                    <p className="text-primary font-semibold mt-1">$17.99</p>
-                                </div>
-                            </div>
-                        </div>
+                        <ProductMerch product={item} />
                     </SwiperSlide>
                 ))}
-            </Swiper>
+            </StyleSliderWrapper>
         </section>
     );
 };

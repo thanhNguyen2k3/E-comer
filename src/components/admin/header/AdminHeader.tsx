@@ -10,20 +10,7 @@ type Props = {
 };
 
 const AdminHeader = ({ colorBgContainer, collapsed, setCollapsed }: Props) => {
-    return (
-        <Header style={{ padding: 0, background: colorBgContainer }}>
-            <Button
-                type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
-                style={{
-                    fontSize: '16px',
-                    width: 64,
-                    height: 64,
-                }}
-            />
-        </Header>
-    );
+    return <Header style={{ padding: 0, background: colorBgContainer }}></Header>;
 };
 
 export default AdminHeader;

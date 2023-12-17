@@ -13,7 +13,7 @@ export const PATCH = async (req: NextRequest, { params: { id } }: Params) => {
 
         const { extraName, extraPrice } = body;
 
-        const product = await db.extraOption.update({
+        const product = await db.option.update({
             where: {
                 id,
             },

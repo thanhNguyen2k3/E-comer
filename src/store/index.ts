@@ -1,4 +1,5 @@
 import productApi from '@/services/product';
+import { cartReducer } from '@/slices/cart';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer, persistStore } from 'redux-persist';
 
@@ -10,6 +11,7 @@ const persistConfig = {
     whitelist: ['cart'],
 };
 const rootReducer = combineReducers({
+    cart: cartReducer,
     [productApi.reducerPath]: productApi.reducer,
 });
 
@@ -21,9 +23,7 @@ export const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
-            serializableCheck: {
-                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-            },
+            serializableCheck: false,
         }).concat(...middleware),
 });
 export type RootState = ReturnType<typeof store.getState>;

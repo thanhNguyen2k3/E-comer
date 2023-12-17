@@ -5,10 +5,21 @@ import Image from 'next/image';
 import Heading from '@/components/ui/Heading';
 import ProductGoodies from '@/components/component/goodies/ProductGoodies';
 import BrowerCatalog from '@/components/component/catalog/BrowerCatalog';
+import { db } from '@/lib/db';
+import Wrapper from '@/components/local/Wrapper';
 
 type Props = {};
 
-const Page = ({}: Props) => {
+const Page = async ({}: Props) => {
+    const products = await db.product.findMany({
+        where: {
+            deleted: false,
+        },
+        include: {
+            category: true,
+            options: true,
+        },
+    });
     return (
         <div className="relative">
             <div className="relative pb-6">
@@ -19,9 +30,9 @@ const Page = ({}: Props) => {
             {/* Content start */}
 
             {/* About start */}
-            <div className="w-layout max-w-full mx-auto relative z-10">
+            <Wrapper>
                 <div className="lg:flex block">
-                    <div className="lg:w-2/3 w-full px-7 py-6">
+                    <div className="lg:w-2/3 w-full lg:p-6">
                         <p className="text-sub lg:text-xl md:text-lg text-sm text-center tracking-wide">
                             <strong className="font-semibold">Genshin Impact</strong> and{' '}
                             <strong className="font-semibold">Honkai: Star Rail</strong> are popular video games
@@ -61,12 +72,12 @@ const Page = ({}: Props) => {
                         <header className="text-xs font-normal">Advertisement</header>
                     </div>
                 </div>
-            </div>
+            </Wrapper>
             {/* About end */}
 
             {/* Product carousel start */}
 
-            <ProductCarousel />
+            <ProductCarousel products={products} />
 
             {/* Product carousel end */}
 
@@ -74,7 +85,7 @@ const Page = ({}: Props) => {
             <div className="max-w-full w-layout mx-auto">
                 <Heading title="MORE GENSHIN IMPACT MERCH" />
 
-                <ProductGoodies />
+                <ProductGoodies products={products} />
             </div>
             {/* Teyvat Goodies end */}
 
