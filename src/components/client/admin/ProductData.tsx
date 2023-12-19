@@ -2,7 +2,7 @@
 
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons';
 import { Category, Option, Product } from '@prisma/client';
-import { Button, Input, InputRef, Modal, Space, Table, message } from 'antd';
+import { Button, Image, Input, InputRef, Modal, Space, Table, message } from 'antd';
 
 import { ColumnType, ColumnsType, FilterConfirmProps } from 'antd/es/table/interface';
 import { Key, useRef, useState } from 'react';
@@ -197,6 +197,16 @@ const ProductData = ({ products, options, categories }: Props) => {
     });
 
     const columns: ColumnsType<ExtandProduct> = [
+        {
+            title: 'Ảnh',
+
+            dataIndex: 'images',
+            key: 'images',
+            render: (record) => {
+                return <Image width={80} src={`/uploads/${record![0]}`} />;
+            },
+            width: '8%',
+        },
         {
             title: 'Tên',
             dataIndex: 'name',

@@ -14,7 +14,7 @@ import Link from 'next/link';
 const links = [
     {
         id: 'orders',
-        to: 'dashboard',
+        to: 'orders',
         title: 'Đơn hàng',
         icon: <FileProtectOutlined />,
     },

@@ -16,6 +16,7 @@ type DynamicParams = {
 
 const Page = async ({ searchParams, params: { slug } }: DynamicParams) => {
     const page = searchParams['page'] ?? '1';
+    const characterId = searchParams['filter_character']?.toString() || undefined;
 
     const currentPage = Math.max(Number(page), 1);
 
@@ -25,6 +26,18 @@ const Page = async ({ searchParams, params: { slug } }: DynamicParams) => {
             category: {
                 slug: slug || undefined,
             },
+            groupCharacter:
+                characterId === undefined
+                    ? {
+                          every: {
+                              characterId,
+                          },
+                      }
+                    : {
+                          some: {
+                              characterId,
+                          },
+                      },
         },
     });
 
@@ -34,6 +47,18 @@ const Page = async ({ searchParams, params: { slug } }: DynamicParams) => {
             category: {
                 slug: slug || undefined,
             },
+            groupCharacter:
+                characterId === undefined
+                    ? {
+                          every: {
+                              characterId,
+                          },
+                      }
+                    : {
+                          some: {
+                              characterId,
+                          },
+                      },
         },
         include: {
             category: true,

@@ -331,7 +331,7 @@ const ProductDetail = ({ product }: Props) => {
                                 <span className="text-sm font-semibold">Nhân vật</span>
                                 <span>
                                     {product.groupCharacter
-                                        .map((group) => group.character.name)
+                                        ?.map((group) => group.character.name)
                                         .join(', ')
                                         .toUpperCase()}
                                 </span>

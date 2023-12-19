@@ -39,6 +39,7 @@ model User {
     name            String?
     email           String?   @unique
     emailVerified   DateTime?
+    password        String?
     isAdmin         Boolean   @default(false)
     username        String?   @unique
     address         String?
@@ -169,12 +170,13 @@ model Order {
     deliveryMethod Int @default(1)
     total          Int @default(0)
 
-    phone     String   @default("")
-    address   String   @default("")
-    deleted   Boolean  @default(false)
-    status    Int      @default(1)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    phone         String   @default("")
+    address       String   @default("")
+    detailAddress String   @default("")
+    deleted       Boolean  @default(false)
+    status        Int      @default(1)
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
 
     @@index([userId])
 }

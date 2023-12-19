@@ -6,14 +6,15 @@ import {
     DeleteOutlined,
     AppstoreAddOutlined,
     ControlOutlined,
-    RobotOutlined,
     BoldOutlined,
     FolderOutlined,
     FolderAddOutlined,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
+    LogoutOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu, Avatar, Button } from 'antd';
+import { Layout, Menu, Button } from 'antd';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -82,11 +83,11 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
                     height: 64,
                     position: 'absolute',
                     zIndex: 99,
-                    right: 0,
+                    right: -60,
                 }}
             />
-            <div className="flex justify-center bg-white py-6 px-4 m-0 text-sm whitespace-nowrap  text-slate-700">
-                <img src={'../vercel.svg'} className="w-full shadow " alt="" />
+            <div className="flex justify-center bg-black px-4 py-2 m-0 text-sm whitespace-nowrap  text-slate-700">
+                <img src={'../emoji-sucrose-ok.webp'} className="w-full shadow " alt="" />
             </div>
             <Menu
                 onClick={handleClick}
@@ -170,6 +171,11 @@ const Sidebar = ({ collapsed, setCollapsed }: Props) => {
                         key: 'trash/order',
                         icon: <DeleteOutlined />,
                         label: <Link href={'/admin/trash/order'}>Đơn hàng (xóa)</Link>,
+                    },
+                    {
+                        key: 'admin/logout',
+                        icon: <LogoutOutlined />,
+                        label: <button onClick={() => signOut({ redirect: false })}>Đăng xuất</button>,
                     },
                 ]}
             />

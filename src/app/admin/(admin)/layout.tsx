@@ -1,9 +1,12 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Layout, theme } from 'antd';
 import Sidebar from '@/components/admin/sidebar/Sidebar';
 import AdminHeader from '@/components/admin/header/AdminHeader';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import LoadingSpinner from '@/components/ui/LoadingSpinner';
 
 const { Content } = Layout;
 
@@ -12,15 +15,26 @@ type Props = {
 };
 
 const LayoutAdmin = ({ children }: Props) => {
-    const [collapsed, setCollapsed] = useState(false);
+    const router = useRouter();
+    const { data, status } = useSession();
+
+    const [showChild, setShowChild] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
     const {
         token: { colorBgContainer },
     } = theme.useToken();
 
-    const [showChild, setShowChild] = useState(false);
     useEffect(() => {
         setShowChild(true);
     }, []);
+
+    useEffect(() => {
+        if (data?.user.isAdmin) {
+            return;
+        } else {
+            router.push('/admin/login');
+        }
+    }, [router, data]);
 
     if (!showChild) {
         return null;

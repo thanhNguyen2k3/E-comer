@@ -1,5 +1,6 @@
 'use client';
 
+import ButtonComponent from '@/components/local/Button';
 import instance from '@/lib/axios';
 import { StatusEnum } from '@/types/enum';
 import { ExtandOrder } from '@/types/extend';
@@ -9,11 +10,24 @@ import {
     DoubleRightOutlined,
     EditOutlined,
     ExclamationCircleFilled,
+    PrinterOutlined,
     SearchOutlined,
-    UnorderedListOutlined,
 } from '@ant-design/icons';
 import { Order, OrderItem, Product, User } from '@prisma/client';
-import { Button, Input, InputRef, Modal, Space, Table, Form, Typography, Popconfirm, Select, message } from 'antd';
+import {
+    Button,
+    Input,
+    InputRef,
+    Modal,
+    Space,
+    Table,
+    Form,
+    Typography,
+    Popconfirm,
+    Select,
+    message,
+    Tooltip,
+} from 'antd';
 import { ColumnType, FilterConfirmProps } from 'antd/es/table/interface';
 import { useRouter } from 'next/navigation';
 import { FC, HTMLAttributes, Key, ReactNode, useRef, useState } from 'react';
@@ -33,11 +47,11 @@ interface EditableCellProps extends HTMLAttributes<HTMLElement> {
 }
 
 const renderStatus = (status: number) => {
-    if (status === StatusEnum.ORDER_INFO) return <span>PENDING</span>;
+    if (status === StatusEnum.ORDER_UNCONFIRM) return <span>PENDING</span>;
     if (status === StatusEnum.ORDER_CONFIRM) return <span>CONFIRM</span>;
     if (status === StatusEnum.ORDER_SHIPPING) return <span>SHIPPING</span>;
     if (status === StatusEnum.ORDER_COMPLETE) return <span>COMPLETE</span>;
-    if (status === StatusEnum.ORDER_CANCELLED) return <span>CANCELLED</span>;
+    if (status === StatusEnum.ORDER_CANCELLED) return <span className="text-red-500">CANCELLED</span>;
 };
 
 const EditableCell: FC<EditableCellProps> = ({
@@ -58,10 +72,18 @@ const EditableCell: FC<EditableCellProps> = ({
             </Select>
         ) : (
             <Select>
-                <Option value={StatusEnum.ORDER_INFO}>PENDING</Option>
-                <Option value={StatusEnum.ORDER_CONFIRM}>CONFIRM</Option>
-                <Option value={StatusEnum.ORDER_SHIPPING}>SHIPPING</Option>
-                <Option value={StatusEnum.ORDER_COMPLETE}>COMPLETE</Option>
+                <Option disabled={record?.status >= StatusEnum.ORDER_UNCONFIRM} value={StatusEnum.ORDER_UNCONFIRM}>
+                    PENDING
+                </Option>
+                <Option disabled={record?.status >= StatusEnum.ORDER_CONFIRM} value={StatusEnum.ORDER_CONFIRM}>
+                    CONFIRM
+                </Option>
+                <Option disabled={record?.status >= StatusEnum.ORDER_SHIPPING} value={StatusEnum.ORDER_SHIPPING}>
+                    SHIPPING
+                </Option>
+                <Option disabled={record?.status >= StatusEnum.ORDER_COMPLETE} value={StatusEnum.ORDER_COMPLETE}>
+                    COMPLETE
+                </Option>
             </Select>
         );
 
@@ -116,6 +138,7 @@ type DataIndex = keyof ExtandOrder;
 const OrderData = ({ orders }: Props) => {
     const router = useRouter();
     const [form] = Form.useForm();
+    const ref = useRef();
 
     //state start
     const [searchText, setSearchText] = useState('');
@@ -129,6 +152,8 @@ const OrderData = ({ orders }: Props) => {
     // Ref start
     const searchInput = useRef<InputRef>(null);
     //Ref end
+
+    // Handle
 
     const hasSelected = selectedRowKeys.length > 0;
 
@@ -199,14 +224,16 @@ const OrderData = ({ orders }: Props) => {
 
             const newData = [...orders];
 
-            const {} = await instance.patch(`/api/pr/order/${id}`, {
-                isPaid: Number(row.isPaid) === 1 ? true : false,
-                status: row.status,
-            });
-
-            message.success('Cập nhật thành công');
-
-            router.refresh();
+            if (row.status === StatusEnum.ORDER_CONFIRM) {
+                await instance
+                    .patch(`/api/pr/order/${id}`, {
+                        status: row.status,
+                    })
+                    .then(() => {
+                        message.success('Cập nhật thành công');
+                        router.refresh();
+                    });
+            }
 
             const index = newData.findIndex((item) => id === item.id);
 
@@ -306,11 +333,11 @@ const OrderData = ({ orders }: Props) => {
     const columns: any[] = [
         {
             title: 'Tên khách hàng',
-            dataIndex: 'user',
-            key: 'user',
+            dataIndex: 'fullName',
+            key: 'fullName',
             width: '20%',
-            render: (record: { name: string }) => {
-                return record.name;
+            render: (record: string) => {
+                return record;
             },
         },
         {
@@ -321,15 +348,6 @@ const OrderData = ({ orders }: Props) => {
             ...getColumnSearchProps('phone'),
         },
         {
-            title: 'Tổng giá',
-            dataIndex: 'total',
-            key: 'total',
-            width: '10%',
-            render: (total: number) => {
-                return formartUSD(total);
-            },
-        },
-        {
             title: 'STATUS',
             dataIndex: 'status',
             key: 'status',
@@ -338,17 +356,29 @@ const OrderData = ({ orders }: Props) => {
             editable: true,
         },
         {
-            title: 'Trạng thái',
+            title: 'PAID',
             dataIndex: 'isPaid',
             key: 'isPaid',
-            width: '15%',
-            render: (record: boolean) =>
-                record ? (
-                    <span className="text-green-500">Thành công</span>
+            width: '10%',
+            render: (record: boolean) => {
+                return record ? (
+                    <span className="text-green-500">SUCCESS</span>
                 ) : (
-                    <span className="text-red-500">Thất bại</span>
+                    <span className="text-red-500">ERROR</span>
+                );
+            },
+        },
+        {
+            title: 'Thanh toán',
+            dataIndex: 'payMethod',
+            key: 'payMethod',
+            width: '15%',
+            render: (record: number) =>
+                record === 1 ? (
+                    <span className="text-green-500">Trả sau</span>
+                ) : (
+                    <span className="text-red-500">Đã thanh toán</span>
                 ),
-            editable: true,
         },
         {
             title: 'operation',
@@ -370,20 +400,27 @@ const OrderData = ({ orders }: Props) => {
                         </Popconfirm>
                     </span>
                 ) : (
-                    <div>
-                        <Button
-                            type="default"
+                    <div className="flex">
+                        <ButtonComponent
                             icon={<EditOutlined />}
-                            disabled={editingKey !== ''}
+                            disabled={editingKey !== '' || record.status === StatusEnum.ORDER_CANCELLED}
                             onClick={() => edit(record)}
                         />
-                        <Button
+
+                        <ButtonComponent
+                            disabled={editingKey !== '' || record.status === StatusEnum.ORDER_CANCELLED}
                             onClick={() => showDeleteConfirm(record)}
-                            type="default"
-                            className="ml-2"
-                            danger
+                            className="ml-2 !bg-red-500"
                             icon={<DeleteOutlined />}
                         />
+
+                        {record.status !== StatusEnum.ORDER_CANCELLED && (
+                            <ButtonComponent
+                                onClick={() => router.push(`orders/${record.id}`)}
+                                className="ml-2  !bg-gray-800"
+                                icon={<PrinterOutlined />}
+                            />
+                        )}
                     </div>
                 );
             },
@@ -431,37 +468,43 @@ const OrderData = ({ orders }: Props) => {
                                     </h1>
                                     <p>
                                         <span className="inline-block w-[180px]">Tên khách hàng:</span>
-                                        <span className="font-semibold text-primary tracking-wider">
-                                            {record.fullName}
-                                        </span>
+                                        <span className="font-semibold tracking-wider">{record.fullName}</span>
+                                    </p>
+                                    <p>
+                                        <span className="inline-block w-[180px]">Email:</span>
+                                        <span className="font-semibold tracking-wider">{record.user?.email}</span>
                                     </p>
                                     <p>
                                         <span className="inline-block w-[180px]">Số điện thoại:</span>
-                                        <span className="font-semibold text-primary tracking-wider">
-                                            {record.phone}
-                                        </span>
+                                        <span className="font-semibold tracking-wider">{record.phone}</span>
+                                    </p>
+                                    <p>
+                                        <span className="inline-block w-[180px]">Địa chỉ:</span>
+                                        <span className="font-semibold tracking-wider">{record.address}</span>
+                                    </p>
+                                    <p>
+                                        <span className="inline-block w-[180px]">Địa chỉ chi tiết:</span>
+                                        <span className="font-semibold tracking-wider">{record.detailAddress}</span>
                                     </p>
                                     <p>
                                         <span className="inline-block w-[180px]">Tổng: </span>
-                                        <span className="font-semibold text-primary tracking-wider">
-                                            {formartUSD(record.total)}
-                                        </span>
+                                        <span className="font-semibold tracking-wider">{formartUSD(record.total)}</span>
                                     </p>
                                     <p>
                                         <span className="inline-block w-[180px]">Phương thức thanh toán:</span>
-                                        <span className="font-semibold text-primary tracking-wider">
+                                        <span className="font-semibold tracking-wider">
                                             {record.payMethod === 1 ? 'Trả sau' : 'Đã thanh toán'}
                                         </span>
                                     </p>
                                     <p>
                                         <span className="inline-block w-[180px]">Giao hàng:</span>
-                                        <span className="font-semibold text-primary tracking-wider">
+                                        <span className="font-semibold tracking-wider">
                                             {record.deliveryMethod === 1 ? 'Tiêu chuẩn' : 'Nhanh'}
                                         </span>
                                     </p>
                                     <p>
                                         <span className="inline-block w-[180px]">Status:</span>
-                                        <span className="font-semibold text-primary tracking-wider">
+                                        <span className="font-semibold tracking-wider">
                                             {renderStatus(record.status)}
                                         </span>
                                     </p>

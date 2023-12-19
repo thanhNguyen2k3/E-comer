@@ -102,63 +102,69 @@ const CheckoutDetail = ({ products, orderItems }: Props) => {
     const handleFinish = async (values: any) => {
         const {} = values;
 
-        if (status === 'unauthenticated') {
-            message.error('Vui lòng đăng nhập để thanh toán');
-        } else {
-            if (payMethod === 1) {
-                try {
-                    setIsLoading(true);
-                    await instance
-                        .post('/api/pl/order', {
-                            orderItems: cartItems,
-                            payMethod,
-                            deliveryMethod,
-                            address: `${state.name} - ${city.name} - ${country.name}`,
-                            total: totalAmount(cartItems) + deliveryMoney,
-                            ...values,
-                        })
-                        .then((res) => {
-                            router.push(`/shopping-cart/checkout/${res.data.id}/?vnp_ResponseCode=00`);
-                        });
-                } catch (error: any) {
-                    setIsLoading(true);
-                    message.error(error.message);
-                } finally {
-                    setIsLoading(false);
+        if (cartItems.length === 0) {
+            return message.info('Không tìm thấy sản phẩm nào để có thể thanh toán.');
+        }
+
+        if (window.confirm('Đơn hàng không thể bị hủy sau khi đã thanh toán')) {
+            if (status === 'unauthenticated') {
+                message.error('Vui lòng đăng nhập để thanh toán');
+            } else {
+                if (payMethod === 1) {
+                    try {
+                        setIsLoading(true);
+                        await instance
+                            .post('/api/pl/order', {
+                                orderItems: cartItems,
+                                payMethod,
+                                deliveryMethod,
+                                address: `${state.name} - ${city.name} - ${country.name}`,
+                                total: totalAmount(cartItems) + deliveryMoney,
+                                ...values,
+                            })
+                            .then((res) => {
+                                router.push(`/shopping-cart/checkout/${res.data.id}/?vnp_ResponseCode=00`);
+                            });
+                    } catch (error: any) {
+                        setIsLoading(true);
+                        message.error(error.message);
+                    } finally {
+                        setIsLoading(false);
+                    }
                 }
-            }
 
-            if (payMethod === 2) {
-                try {
-                    setIsLoading(true);
-                    const response = await instance.post('/api/pl/vnpay', {
-                        orderId: Math.random(),
-                        language: '',
-                        orderType: 1,
-                        orderDescription: 'vnpay',
-                        amount: totalAmount(cartItems) + deliveryMoney,
-                        bankCode: '',
-                        userId: data?.user.id,
-                        products: cartItems,
-                        address: `${state.name} - ${city.name} - ${country.name}`,
-                        deliveryMethod,
-                        payMethod,
-                        ...values,
-                    });
+                if (payMethod === 2) {
+                    try {
+                        setIsLoading(true);
+                        const response = await instance.post('/api/pl/vnpay', {
+                            orderId: Math.random(),
+                            language: '',
+                            orderType: 1,
+                            orderDescription: 'vnpay',
+                            amount: totalAmount(cartItems) + deliveryMoney,
+                            bankCode: '',
+                            userId: data?.user.id,
+                            products: cartItems,
+                            address: `${state.name} - ${city.name} - ${country.name}`,
+                            deliveryMethod,
+                            payMethod,
+                            ...values,
+                        });
 
-                    window.location = response.data.url;
-                } catch (error: any) {
-                    setIsLoading(true);
-                    message.error(error.message);
-                } finally {
-                    setIsLoading(false);
+                        window.location = response.data.url;
+                    } catch (error: any) {
+                        setIsLoading(true);
+                        message.error(error.message);
+                    } finally {
+                        setIsLoading(false);
+                    }
                 }
             }
         }
     };
 
     return (
-        <Wrapper>
+        <Wrapper className="py-8">
             <Form form={form} layout="vertical" onFinish={handleFinish}>
                 <div className="grid grid-cols-1 gap-y-10 md:grid-cols-2 gap-x-6 lg:grid-cols-2">
                     <div className="col-span-1">
@@ -190,6 +196,13 @@ const CheckoutDetail = ({ products, orderItems }: Props) => {
                         <InputField
                             name={'phone'}
                             label="Số điện thoại"
+                            rules={[{ required: true, message: 'Bắt buộc' }]}
+                        />
+
+                        <InputField
+                            textarea
+                            name={'detailAddress'}
+                            label="Địa chỉ chi tiết"
                             rules={[{ required: true, message: 'Bắt buộc' }]}
                         />
 

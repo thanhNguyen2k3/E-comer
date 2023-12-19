@@ -4,6 +4,9 @@ export const getTotalRevenue = async () => {
     const paidOrders = await db.order.findMany({
         where: {
             isPaid: true,
+            status: {
+                gt: 1,
+            },
         },
         include: {
             orderItems: {

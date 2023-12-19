@@ -1,5 +1,6 @@
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { StatusEnum } from '@/types/enum';
 import { NextRequest, NextResponse } from 'next/server';
 
 type Params = {
@@ -14,7 +15,7 @@ export const PATCH = async (req: NextRequest, { params: { id } }: Params) => {
     try {
         const body = await req.json();
 
-        const { isPaid, status } = body;
+        const { status } = body;
 
         const order = await db.order.findFirst({
             where: {
@@ -31,12 +32,52 @@ export const PATCH = async (req: NextRequest, { params: { id } }: Params) => {
                 id,
             },
             data: {
-                isPaid,
                 status,
+            },
+            include: {
+                orderItems: {
+                    include: {
+                        product: true,
+                    },
+                },
             },
         });
 
-        return new NextResponse(JSON.stringify(newOrder));
+        if (newOrder.status === StatusEnum.ORDER_CONFIRM) {
+            let holder: any = {};
+
+            newOrder.orderItems.forEach((d) => {
+                if (holder.hasOwnProperty(d.productId)) {
+                    holder[d.productId] = holder[d.productId] + d.quantity;
+                } else {
+                    holder[d.productId] = d.quantity;
+                }
+            });
+
+            let obj2: any[] = [];
+
+            for (const prop in holder) {
+                obj2.push({ key: prop, value: holder[prop] });
+            }
+
+            obj2.map(async (item) => {
+                await db.product.updateMany({
+                    where: {
+                        id: item.key,
+                    },
+                    data: {
+                        inStock: {
+                            decrement: item.value,
+                        },
+                        selled: {
+                            increment: item.value,
+                        },
+                    },
+                });
+            });
+        }
+
+        return NextResponse.json(newOrder, { status: 200 });
     } catch (error: any) {
         return new NextResponse(JSON.stringify(error.message), { status: 400 });
     }

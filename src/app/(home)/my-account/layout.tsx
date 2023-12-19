@@ -1,4 +1,5 @@
 'use client';
+
 import Wrapper from '@/components/local/Wrapper';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { signOut, useSession } from 'next-auth/react';

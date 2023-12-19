@@ -20,7 +20,7 @@ const Page = async () => {
     });
 
     return (
-        <div className="antd-dropdown-custom">
+        <div>
             <OrderData orders={orders} />
         </div>
     );

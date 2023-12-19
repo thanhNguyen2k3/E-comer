@@ -49,7 +49,7 @@ const StyleLinkImage = styled(Link)`
 const CharacterCardItem = ({ character }: Props) => {
     return (
         <StyledCard>
-            <StyleLinkImage href={`/characters/${character?.id}`} className="z-[3] relative">
+            <StyleLinkImage href={`/shop/?filter_character=${character?.id}`} className="z-[3] relative">
                 <img src={`/uploads/${character?.thumbnail}`} alt="" />
             </StyleLinkImage>
 

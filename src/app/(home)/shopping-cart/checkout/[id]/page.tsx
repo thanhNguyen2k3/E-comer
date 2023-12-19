@@ -4,10 +4,9 @@ import AlertError from '@/components/ui/AlertError';
 import instance from '@/lib/axios';
 import { clear } from '@/slices/cart';
 import { useAppDispatch } from '@/store/hook';
-import { StatusEnum } from '@/types/enum';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { message } from 'antd';
-import { useRouter, useSearchParams, notFound } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
@@ -42,6 +41,7 @@ const StyleInline = styled.div`
 const Page = ({ params: { id } }: Props) => {
     const params = useSearchParams();
     const router = useRouter();
+    const { data } = useSession();
     const dispatch = useAppDispatch();
 
     const code = params.get('vnp_ResponseCode');
@@ -67,16 +67,22 @@ const Page = ({ params: { id } }: Props) => {
 
                 if (Number(code) === Number('00')) {
                     const makeRequest = async () => {
-                        const res = await instance
+                        await instance
                             .patch(`/api/pl/vnpay/${id}`, {
-                                isPaid: true,
-                                status: StatusEnum.ORDER_CONFIRM,
+                                isPaid: Boolean(true),
                             })
-                            .then(() => {
-                                dispatch(clear());
-                                setTimeout(() => {
-                                    router.push('/');
-                                }, 5000);
+                            .then(async (res) => {
+                                await instance
+                                    .post('/api/pl/send-email', {
+                                        orderId: id!,
+                                        orderItems: res.data,
+                                    })
+                                    .then(() => {
+                                        dispatch(clear());
+                                        setTimeout(() => {
+                                            router.push('/');
+                                        }, 5000);
+                                    });
                             });
                     };
                     makeRequest();

@@ -60,6 +60,7 @@ export const POST = async (req: NextRequest) => {
         phone,
         deliveryMethod,
         payMethod,
+        detailAddress,
     } = body;
 
     const newOrder = await db.order.create({
@@ -84,9 +85,10 @@ export const POST = async (req: NextRequest) => {
             phone,
             total: amount,
             deliveryMethod,
+            detailAddress,
             payMethod,
             isPaid: false,
-            status: StatusEnum.ORDER_INFO,
+            status: StatusEnum.ORDER_UNCONFIRM,
         },
     });
 

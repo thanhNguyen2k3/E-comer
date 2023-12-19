@@ -10,6 +10,8 @@ type Props = InputProps &
         children?: ReactNode;
         isNumber?: boolean;
         ref?: MutableRefObject<InputRef | null>;
+        textarea?: boolean;
+        isPassword?: boolean;
     };
 
 const StyleInput = styled(Input)`
@@ -23,10 +25,12 @@ const StyleInput = styled(Input)`
 
     &:focus {
         border-color: #ccc;
+        background-color: #eee;
     }
 
     &:hover {
         border-color: #ccc;
+        background-color: #eee;
     }
 `;
 
@@ -50,13 +54,72 @@ const StyleInputNumber = styled(InputNumber)`
 
 const StyleFormItem = styled(Form.Item)`
     margin-bottom: 12px;
+
+    textarea {
+        border: solid 2px #ddd;
+        border-radius: 2px;
+        color: #545454;
+        font-size: 16px;
+        font-weight: 400;
+
+        &:focus {
+            border-color: #ccc;
+        }
+
+        &:active {
+            border-color: #ccc;
+        }
+
+        &:focus-within {
+            border-color: #ccc;
+        }
+    }
 `;
 
-const InputField = ({ onChange, isNumber, children, ...props }: Props) => {
+const StyleInputPassword = styled(Input.Password)`
+    border: solid 2px #ddd;
+    border-radius: 2px;
+    padding: 10px;
+    color: #545454;
+    font-size: 16px;
+    font-weight: 400;
+    width: 100%;
+
+    &:focus {
+        border-color: #ccc;
+        background-color: #eee;
+    }
+
+    &:focus-within {
+        border-color: #ccc;
+        background-color: #eee;
+    }
+
+    &:hover {
+        border-color: #ccc;
+        background-color: #eee;
+    }
+`;
+
+const InputField = ({ onChange, isNumber, children, textarea, isPassword, ...props }: Props) => {
     return (
-        <StyleFormItem {...props}>
-            {isNumber ? <StyleInputNumber /> : <StyleInput {...props} onChange={onChange} />}
-        </StyleFormItem>
+        <>
+            {textarea ? (
+                <StyleFormItem {...props}>
+                    <StyleInput.TextArea />
+                </StyleFormItem>
+            ) : (
+                <StyleFormItem {...props}>
+                    {isNumber ? (
+                        <StyleInputNumber />
+                    ) : isPassword ? (
+                        <StyleInputPassword {...props} onChange={onChange} />
+                    ) : (
+                        <StyleInput {...props} onChange={onChange} />
+                    )}
+                </StyleFormItem>
+            )}
+        </>
     );
 };
 

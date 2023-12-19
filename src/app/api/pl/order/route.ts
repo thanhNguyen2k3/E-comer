@@ -8,7 +8,7 @@ export const POST = async (req: NextRequest) => {
     try {
         const session = await getAuthSession();
         const body = await req.json();
-        const { fullName, payMethod, deliveryMethod, total, phone, address, orderItems } = body;
+        const { fullName, payMethod, deliveryMethod, total, phone, address, orderItems, detailAddress } = body;
 
         if (!session) {
             return NextResponse.json({ message: 'Không tìm thấy khách hàng' }, { status: 403 });
@@ -21,7 +21,8 @@ export const POST = async (req: NextRequest) => {
                 deliveryMethod,
                 phone,
                 userId: session?.user.id,
-                status: StatusEnum.ORDER_CONFIRM,
+                status: StatusEnum.ORDER_UNCONFIRM,
+                detailAddress,
                 payMethod,
                 total,
                 isPaid: false,

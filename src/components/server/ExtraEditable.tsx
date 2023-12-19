@@ -1,4 +1,4 @@
-import React, { FC, HTMLAttributes, Key, ReactNode, useEffect, useState } from 'react';
+import { FC, HTMLAttributes, ReactNode, useState } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
 import { Option } from '@prisma/client';
 import instance from '@/lib/axios';

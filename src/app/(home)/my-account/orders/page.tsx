@@ -1,7 +1,7 @@
-import Bill from '@/components/component/Bill';
-import BillBoard from '@/components/local/BillBoard';
+import OrderDetail from '@/components/client/user/orders/OrderDetail';
 import { getAuthSession } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { StatusEnum } from '@/types/enum';
 import { formartUSD } from '@/utils/formartUSD';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { Collapse, CollapseProps } from 'antd';
@@ -27,40 +27,25 @@ const Page = async () => {
         },
     });
 
-    const items: CollapseProps['items'] = orders.map((order) => ({
-        key: order.id,
-        label: `Đơn hàng - ${order.createdAt.toLocaleDateString()}`,
-        children: (
-            <div className="overflow-x-auto">
-                <table className="border min-w-[500px]">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th className="text-left">Sản phẩm</th>
-                            <th className="line-clamp-1 min-w-[100px] text-center">Số lượng</th>
-                            <th className="min-w-[100px] text-center">Giá</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {order.orderItems.map((item) => (
-                            <tr className="border" key={item.id}>
-                                <td className="p-2">
-                                    <img
-                                        src={`/uploads/${item.product.images![0]}`}
-                                        className="min-w-[50px] min-h-[50px]"
-                                        alt=""
-                                    />
-                                </td>
-                                <td className="p-2 w-full">{item.name}</td>
-                                <td className="p-2 text-center">{item.quantity}</td>
-                                <td className="p-2 text-center">{formartUSD(item.product.price * item.quantity)}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        ),
-    }));
+    const items: CollapseProps['items'] = orders.map((order) => {
+        const renderStatus = (status: number) => {
+            if (status === StatusEnum.ORDER_UNCONFIRM) return <span className="">PENDING</span>;
+            if (status === StatusEnum.ORDER_CONFIRM) return <span className="text-primary">CONFIRM</span>;
+            if (status === StatusEnum.ORDER_SHIPPING) return <span className="text-primary">SHIPPING</span>;
+            if (status === StatusEnum.ORDER_COMPLETE) return <span className="text-primary">COMPLETE</span>;
+            if (status === StatusEnum.ORDER_CANCELLED) return <span className="text-red-500">CANCELLED</span>;
+        };
+
+        return {
+            key: order.id,
+            label: (
+                <h1>
+                    Đơn hàng - {order.createdAt.toLocaleDateString()} - {renderStatus(order.status)}
+                </h1>
+            ),
+            children: <OrderDetail order={order} />,
+        };
+    });
 
     return (
         <div>

@@ -47,7 +47,7 @@ const FilterByCharacters = ({ characters }: Props) => {
                                 className="text-sm capitalize"
                                 href={
                                     pathCheck[2] === undefined
-                                        ? `/shop/character/${character.id}`
+                                        ? `/shop/?filter_character=${character.id}`
                                         : `/shop/${pathCheck[2]}/?filter_character=${character.id}`
                                 }
                                 scroll={false}
